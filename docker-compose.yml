@@ -1,10 +1,43 @@
-version: '3.0'
-
 services:
-
   nginx:
-    image: nginx
+    image: nginx:latest
     ports:
-      - 80:80
+      - "80:80"
+      - "443:443"
     volumes:
-      - ./html:/usr/share/nginx/html
+      - ./www:/var/www/html
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - php
+      - mysql
+    networks:
+      - app
+
+  php:
+    build:
+      context: ./docker/php
+    volumes:
+      - ./www:/var/www/html
+    environment:
+      - DB_HOST=mysql
+    networks:
+      - app
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: secret
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - app
+
+networks:
+  app:
+    driver: bridge
+
+volumes:
+  mysql_data:
