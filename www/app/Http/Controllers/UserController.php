@@ -3,32 +3,34 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
+use App\Services\AuthService;
+use App\Services\UserService;
 
 class UserController extends Controller
 {
+    protected $authService;
+    protected $userService;
+
+    public function __construct(AuthService $authService, UserService $userService)
+    {
+        $this->authService = $authService;
+        $this->userService = $userService;
+    }
+
     public function index(Request $request)
     {     
-        if (!auth()->check()) {
-            return redirect()->route('login');
+        if (!$this->authService->isAuthenticated()) {
+            return $this->authService->redirectToLogin();
         }
     
-        if (auth()->user()->role !== 'admin') {
+        if (!$this->authService->isAdmin()) {
             return view('dashboard', ['showUserTable' => false]);
         }
     
-        $query = User::query()->select(['id', 'name', 'email', 'email_verified_at', 'created_at', 'role']);
-    
-        if ($request->filled('search_name')) {
-            $query->byName($request->search_name);
-        }
-    
-        if ($request->filled('search_email')) {
-            $query->byEmail($request->search_email);
-        }
-    
-        $perPage = min($request->input('perPage', 10), 100);
-        $users = $query->paginate($perPage)->withQueryString();
+        $users = $this->userService->getFilteredUsers(
+            $request->only(['search_name', 'search_email']),
+            $request->input('perPage', 10)
+        );
     
         return view('dashboard', [
             'users' => $users,
