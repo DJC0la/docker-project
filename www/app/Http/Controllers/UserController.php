@@ -8,17 +8,7 @@ use App\Models\User;
 class UserController extends Controller
 {
     public function index(Request $request)
-    {
-        $validated = $request->validate([
-            'search_name' => 'nullable|string|max:255',
-            'search_email' => 'nullable|string|max:255',
-            'perPage' => 'nullable|integer|min:1|max:100'
-        ]);
-    
-        $searchName = $validated['search_name'] ?? null;
-        $searchEmail = $validated['search_email'] ?? null;
-        $perPage = $validated['perPage'] ?? 10;
-        
+    {     
         if (!auth()->check()) {
             return redirect()->route('login');
         }

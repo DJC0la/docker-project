@@ -34,7 +34,7 @@ services:
       - "3000:3000"
 
   mysql:
-    image: mysql:8.0
+    image: mysql:5.7
     container_name: mysql_con
     ports:
       - 3306:3306
