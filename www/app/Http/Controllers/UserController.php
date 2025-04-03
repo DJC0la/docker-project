@@ -37,4 +37,15 @@ class UserController extends Controller
             'showUserTable' => true
         ]);
     }
+
+    public function store(Request $request)
+    {
+        if (!$this->authService->isAdmin()) {
+            abort(403);
+        }
+
+        $user = $this->userService->createUser($validated);
+
+        return redirect()->route('dashboard')->with('success', 'Пользователь успешно создан');
+    }
 }

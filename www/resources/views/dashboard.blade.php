@@ -36,8 +36,84 @@
                     </form>
                 </div>
 
+                <!-- добавление пользователя-->
+                <div class="mb-6 w-full" x-data="{ showCreateForm: false }">
+                    <x-secondary-button 
+                        @click="showCreateForm = !showCreateForm"
+                        class="px-4 py-2 border rounded-lg text-sm text-gray-400 bg-gray-800 mb-4"
+                    >
+                        <span x-text="showCreateForm ? 'cancel' : 'create'"></span>
+                    </x-secondary-button>
+
+                    <div x-show="showCreateForm" x-transition class="bg-gray-800 p-4 rounded-lg mb-6">
+                        <form action="{{ route('users.store') }}" method="POST">
+                            @csrf
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <x-input-label for="name" value="Name" />
+                                    <x-text-input 
+                                        id="name" 
+                                        name="name" 
+                                        type="text" 
+                                        class="mt-1 block w-full" 
+                                        required 
+                                        autocomplete="name" 
+                                    />
+                                </div>
+                                
+                                <div>
+                                    <x-input-label for="email" value="Email" />
+                                    <x-text-input 
+                                        id="email" 
+                                        name="email" 
+                                        type="email" 
+                                        class="mt-1 block w-full" 
+                                        required 
+                                        autocomplete="email" 
+                                    />
+                                </div>
+                                
+                                <div>
+                                    <x-input-label for="password" value="Password" />
+                                    <x-text-input 
+                                        id="password" 
+                                        name="password" 
+                                        type="password" 
+                                        class="mt-1 block w-full" 
+                                        required 
+                                        autocomplete="new-password" 
+                                    />
+                                </div>
+                                
+                                <div>
+                                    <x-input-label for="role" value="Role" />
+                                    <select 
+                                        id="role" 
+                                        name="role" 
+                                        class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"
+                                    >
+                                        <option value="user">User</option>
+                                        <option value="admin">Admin</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-end mt-4">
+                                <x-primary-button type="submit">
+                                    Create
+                                </x-primary-button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
                 <div class="container mx-auto px-4">
                     <table class="w-full bg-gray-800 text-sm text-gray-400">
+                        @if(session('success'))
+                            <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
+                                {{ session('success') }}
+                            </div>
+                        @endif
                         <thead>
                             <tr>
                                 <th class="py-2 px-4 border-b">ID</th>
