@@ -19,7 +19,7 @@ services:
     volumes:
       - ./www:/var/www/html
     environment:
-      - DB_HOST=mysql
+      - DB_HOST=mysql_con
     networks:
       - app
 
@@ -34,7 +34,7 @@ services:
       - "3000:3000"
 
   mysql:
-    image: mysql:5.7
+    image: mysql:8.0
     container_name: mysql_con
     ports:
       - 3306:3306
