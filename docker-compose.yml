@@ -16,10 +16,16 @@ services:
   php:
     build:
       context: ./docker/php
+      args:
+      - TIME_ZONE=${TIME_ZONE}
+      - USER_NAME=${USER_NAME}
+      - USER_ID=${USER_ID}
+      - USER_GROUP_NAME=${USER_GROUP_NAME}
+      - USER_GROUP_ID=${USER_GROUP_ID}
     volumes:
       - ./www:/var/www/html
-    environment:
-      - DB_HOST=mysql_con
+    env_file:
+      - .env
     networks:
       - app
 
