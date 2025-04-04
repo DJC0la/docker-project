@@ -30,4 +30,24 @@ class UserService
             'role' => $data['role'],
         ]);
     }
+
+    public function updateUser(User $user, array $data)
+    {
+        $updateData = [
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'role' => $data['role'],
+        ];
+
+        if (!empty($data['password'])) {
+            $updateData['password'] = bcrypt($data['password']);
+        }
+
+        return $user->update($updateData);
+    }
+
+    public function deleteUser(User $user)
+    {
+        return $user->delete();
+    }
 }
