@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\UserStoreRequest;
+use App\Http\Requests\UserUpdateRequest;
 use App\Services\AuthService;
 use App\Services\UserService;
 use App\Models\User;
@@ -39,12 +41,13 @@ class UserController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(UserStoreRequest $request)
     {
         if (!$this->authService->isAdmin()) {
             abort(403);
         }
 
+        $validated = $request->validated();
         $user = $this->userService->createUser($validated);
 
         return redirect()->route('dashboard')->with('success', 'Пользователь успешно создан');
@@ -59,19 +62,13 @@ class UserController extends Controller
         return view('users.edit', compact('user'));
     }
 
-    public function update(Request $request, User $user)
+    public function update(UserUpdateRequest $request, User $user)
     {
         if (!$this->authService->isAdmin()) {
             abort(403);
         }
 
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
-            'password' => 'nullable|string|min:8',
-            'role' => 'required|in:user,admin',
-        ]);
-
+        $validated = $request->validated();
         $this->userService->updateUser($user, $validated);
 
         return redirect()->route('dashboard')->with('success', 'Пользователь успешно обновлен');
