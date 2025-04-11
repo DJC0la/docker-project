@@ -133,6 +133,15 @@
                                     {{ session('success') }}
                                 </div>
                             @endif
+                            @if($errors->any())
+                                <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+                                    <ul>
+                                        @foreach($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
                             <thead>
                                 <thead>
                                     <tr>
@@ -218,9 +227,6 @@
                                                                     autocomplete="new-password" 
                                                                     placeholder="Оставьте пустым, чтобы не менять"
                                                                 />
-                                                                @error('password')
-                                                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                                                                @enderror
                                                             </div>
                                                             
                                                             <div>

@@ -40,7 +40,7 @@ class UserController extends Controller
     {
         $this->userService->createUser($request->validated());
         return redirect()->route('dashboard')
-            ->with('success', 'Пользователь успешно создан');
+            ->with('success', 'User successfully created');
     }
 
     public function edit(User $user)
@@ -52,17 +52,17 @@ class UserController extends Controller
     {
         $this->userService->updateUser($user, $request->validated());
         return redirect()->route('dashboard')
-            ->with('success', 'Пользователь успешно обновлён');
+            ->with('success', 'User updated successfully');
     }
 
     public function destroy(User $user)
     {
         if ($user->isAdmin() && User::where('role', 'admin')->count() <= 1) {
-            return back()->with('error', 'Нельзя удалить последнего администратора');
+            return back()->with('error', 'Cannot delete last administrator');
         }
         
         $this->userService->deleteUser($user);
         return redirect()->route('dashboard')
-            ->with('success', 'Пользователь успешно удалён');
+            ->with('success', 'User successfully deleted');
     }
 }
