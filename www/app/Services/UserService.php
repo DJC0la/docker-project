@@ -26,7 +26,7 @@ class UserService
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
-            'password' => $data['password'],
+            'password' => bcrypt($data['password']),
             'role' => $data['role'],
         ]);
     }
@@ -40,7 +40,7 @@ class UserService
         ];
 
         if (!empty($data['password'])) {
-            $updateData['password'] = $data['password'];
+            $updateData['password'] = bcrypt($data['password']);
         }
 
         return $user->update($updateData);
