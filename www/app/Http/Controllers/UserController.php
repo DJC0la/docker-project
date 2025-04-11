@@ -5,28 +5,23 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserStoreRequest;
 use App\Http\Requests\UserUpdateRequest;
-use App\Services\AuthService;
-use App\Services\UserService;
 use App\Models\User;
+use App\Services\UserService;
 
 class UserController extends Controller
 {
-    protected $authService;
-    protected $userService;
+    protected UserService $userService;
 
-    public function __construct(AuthService $authService, UserService $userService)
+    public function __construct(UserService $userService)
     {
-        $this->authService = $authService;
         $this->userService = $userService;
+        $this->middleware('auth');
+        $this->middleware('admin')->except(['index']);
     }
 
     public function index(Request $request)
-    {     
-        if (!$this->authService->isAuthenticated()) {
-            return $this->authService->redirectToLogin();
-        }
-    
-        if (!$this->authService->isAdmin()) {
+    {
+        if (!auth()->user()->isAdmin()) {
             return view('dashboard', ['showUserTable' => false]);
         }
     
@@ -43,45 +38,31 @@ class UserController extends Controller
 
     public function store(UserStoreRequest $request)
     {
-        if (!$this->authService->isAdmin()) {
-            abort(403);
-        }
-
-        $validated = $request->validated();
-        $user = $this->userService->createUser($validated);
-
-        return redirect()->route('dashboard')->with('success', 'Пользователь успешно создан');
+        $this->userService->createUser($request->validated());
+        return redirect()->route('dashboard')
+            ->with('success', 'Пользователь успешно создан');
     }
 
     public function edit(User $user)
     {
-        if (!$this->authService->isAdmin()) {
-            abort(403);
-        }
-
         return view('users.edit', compact('user'));
     }
 
     public function update(UserUpdateRequest $request, User $user)
     {
-        if (!$this->authService->isAdmin()) {
-            abort(403);
-        }
-
-        $validated = $request->validated();
-        $this->userService->updateUser($user, $validated);
-
-        return redirect()->route('dashboard')->with('success', 'Пользователь успешно обновлен');
+        $this->userService->updateUser($user, $request->validated());
+        return redirect()->route('dashboard')
+            ->with('success', 'Пользователь успешно обновлён');
     }
 
     public function destroy(User $user)
     {
-        if (!$this->authService->isAdmin()) {
-            abort(403);
+        if ($user->isAdmin() && User::where('role', 'admin')->count() <= 1) {
+            return back()->with('error', 'Нельзя удалить последнего администратора');
         }
-
+        
         $this->userService->deleteUser($user);
-
-        return redirect()->route('dashboard')->with('success', 'Пользователь успешно удален');
+        return redirect()->route('dashboard')
+            ->with('success', 'Пользователь успешно удалён');
     }
 }

@@ -47,6 +47,11 @@ class User extends Authenticatable
         ];
     }
 
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
     public function scopeByName($query, $name)
     {
         return $query->where('name', 'LIKE', '%'.addcslashes($name, '%_\\').'%');
