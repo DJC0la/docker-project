@@ -5,22 +5,30 @@ namespace App\Http\Requests;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 
 class UserUpdateRequest extends FormRequest
 {
-    public function rules(): array
+    public function authorize()
+    {
+        return true;
+    }
+
+    public function rules()
     {
         return [
             'name' => 'required|string|max:255',
-            'email' => [
-                'required',
+            'email' => 'required|email|unique:users,email,'.$this->user->id,
+            'password' => [
+                'nullable',
+                'sometimes',
                 'string',
-                'email',
-                'max:255',
-                Rule::unique('users')->ignore($this->user->id),
+                'min:8',
+                Password::min(8)
+                ->mixedCase()
+                ->numbers()
             ],
-            'password' => 'nullable|string|min:8',
-            'role' => 'required|in:user,admin',
+            'role' => 'required|in:user,admin'
         ];
     }
 }
