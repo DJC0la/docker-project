@@ -58,7 +58,8 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         if ($user->isAdmin() && User::where('role', 'admin')->count() <= 1) {
-            return back()->with('error', 'Cannot delete last administrator');
+            return redirect()->route('dashboard')
+                ->with('error', 'Cannot delete last administrator');
         }
         
         $this->userService->deleteUser($user);
