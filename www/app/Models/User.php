@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Enums\TypesRole;
 
 class User extends Authenticatable
 {
@@ -44,12 +45,13 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'role' => TypesRole::class,
         ];
     }
 
-    public function isAdmin(): bool
+    public function hasRole(TypesRole $role): bool
     {
-        return $this->role === 'admin';
+        return $this->role === $role;
     }
 
     public function scopeByName($query, $name)
