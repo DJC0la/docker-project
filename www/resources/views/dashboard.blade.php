@@ -230,7 +230,7 @@
                                                                     type="password" 
                                                                     class="mt-1 block w-full" 
                                                                     autocomplete="new-password" 
-                                                                    placeholder="Оставьте пустым, чтобы не менять"
+                                                                    placeholder="Leave blank to not change"
                                                                 />
                                                             </div>
                                                             
