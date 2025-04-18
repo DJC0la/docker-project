@@ -7,32 +7,31 @@ use App\Http\Requests\UserStoreRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Models\User;
 use App\Services\UserService;
+use App\Enums\TypesRole;
 
 class UserController extends Controller
 {
-    protected UserService $userService;
-
-    public function __construct(UserService $userService)
-    {
-        $this->userService = $userService;
+    public function __construct(
+        protected UserService $userService
+    ) {
         $this->middleware('auth');
-        $this->middleware('admin')->except(['index']);
+        $this->middleware('role:'.TypesRole::ADMIN->value)->except(['index']);
     }
 
     public function index(Request $request)
     {
-        if (!auth()->user()->isAdmin()) {
-            return view('dashboard', ['showUserTable' => false]);
-        }
-    
-        $users = $this->userService->getFilteredUsers(
-            $request->only(['search_name', 'search_email']),
-            $request->input('perPage', 10)
-        );
-    
+        $showUserTable = auth()->user()->hasRole(TypesRole::ADMIN);
+
+        $users = $showUserTable
+            ? $this->userService->getFilteredUsers(
+                $request->only(['search_name', 'search_email']),
+                $request->input('perPage', 10)
+            )
+            : collect();
+
         return view('dashboard', [
             'users' => $users,
-            'showUserTable' => true
+            'showUserTable' => $showUserTable
         ]);
     }
 
@@ -40,12 +39,15 @@ class UserController extends Controller
     {
         $this->userService->createUser($request->validated());
         return redirect()->route('dashboard')
-            ->with('success', 'User successfully created');
+            ->with('success', 'User created successfully');
     }
 
     public function edit(User $user)
     {
-        return view('users.edit', compact('user'));
+        return view('users.edit', [
+            'user' => $user,
+            'roles' => TypesRole::cases()
+        ]);
     }
 
     public function update(UserUpdateRequest $request, User $user)
@@ -57,13 +59,13 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        if ($user->isAdmin() && User::where('role', 'admin')->count() <= 1) {
+        if ($this->userService->isLastAdmin($user)) {
             return redirect()->route('dashboard')
                 ->with('error', 'Cannot delete last administrator');
         }
-        
+
         $this->userService->deleteUser($user);
         return redirect()->route('dashboard')
-            ->with('success', 'User successfully deleted');
+            ->with('success', 'User deleted successfully');
     }
 }
