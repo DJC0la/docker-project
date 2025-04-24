@@ -13,10 +13,7 @@ class UserController extends Controller
 {
     public function __construct(
         protected UserService $userService
-    ) {
-        $this->middleware('auth');
-        $this->middleware('role:'.TypesRole::ADMIN->value)->except(['index']);
-    }
+    ) {}
 
     public function index(Request $request)
     {
