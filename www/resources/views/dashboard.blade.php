@@ -6,7 +6,7 @@
         </h2>
     </x-slot>
 
-    @if(auth()->user()->role === 'admin')
+    @if($showUserTable)
         <div class="admin-dashboard">
             <div class="py-6">
                 <div class="container mx-auto px-4">
@@ -40,7 +40,7 @@
                     <div class="mb-6 w-full">
                         <!-- Кнопка добавления пользователя -->
                         <div x-data="{ showCreateForm: false }">
-                            <x-secondary-button 
+                            <x-secondary-button
                                 @click="showCreateForm = true"
                                 class="px-4 py-2 border rounded-lg text-sm text-gray-400 bg-gray-800 mb-4"
                             >
@@ -58,51 +58,51 @@
                                             </svg>
                                         </button>
                                     </div>
-                                    
+
                                     <form action="{{ route('users.store') }}" method="POST">
                                         @csrf
                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <div>
                                                 <x-input-label for="name_create" value="Name" />
-                                                <x-text-input 
-                                                    id="name_create" 
-                                                    name="name" 
-                                                    type="text" 
-                                                    class="mt-1 block w-full" 
-                                                    required 
-                                                    autocomplete="name" 
+                                                <x-text-input
+                                                    id="name_create"
+                                                    name="name"
+                                                    type="text"
+                                                    class="mt-1 block w-full"
+                                                    required
+                                                    autocomplete="name"
                                                 />
                                             </div>
-                                            
+
                                             <div>
                                                 <x-input-label for="email_create" value="Email" />
-                                                <x-text-input 
-                                                    id="email_create" 
-                                                    name="email" 
-                                                    type="email" 
-                                                    class="mt-1 block w-full" 
-                                                    required 
-                                                    autocomplete="email" 
+                                                <x-text-input
+                                                    id="email_create"
+                                                    name="email"
+                                                    type="email"
+                                                    class="mt-1 block w-full"
+                                                    required
+                                                    autocomplete="email"
                                                 />
                                             </div>
-                                            
+
                                             <div>
                                                 <x-input-label for="password_create" value="Password" />
-                                                <x-text-input 
-                                                    id="password_create" 
-                                                    name="password" 
-                                                    type="password" 
-                                                    class="mt-1 block w-full" 
-                                                    required 
-                                                    autocomplete="new-password" 
+                                                <x-text-input
+                                                    id="password_create"
+                                                    name="password"
+                                                    type="password"
+                                                    class="mt-1 block w-full"
+                                                    required
+                                                    autocomplete="new-password"
                                                 />
                                             </div>
-                                            
+
                                             <div>
                                                 <x-input-label for="role_create" value="Role" />
-                                                <select 
-                                                    id="role_create" 
-                                                    name="role" 
+                                                <select
+                                                    id="role_create"
+                                                    name="role"
                                                     class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"
                                                     required
                                                 >
@@ -111,7 +111,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        
+
                                         <div class="flex justify-end mt-4 space-x-2">
                                             <x-secondary-button @click="showCreateForm = false" type="button">
                                                 Cancel
@@ -175,7 +175,7 @@
                                     <div class="flex items-center gap-2">
                                         <!-- Кнопка редактирования -->
                                         <div x-data="{ showEditForm{{ $user->id }}: false }">
-                                            <x-secondary-button 
+                                            <x-secondary-button
                                                 @click="showEditForm{{ $user->id }} = !showEditForm{{ $user->id }}"
                                                 class="px-3 py-1 text-xs w-20 justify-center"
                                             >
@@ -193,52 +193,52 @@
                                                             </svg>
                                                         </button>
                                                     </div>
-                                                    
+
                                                     <form action="{{ route('users.update', $user) }}" method="POST">
                                                         @csrf
                                                         @method('PUT')
                                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                             <div>
                                                                 <x-input-label for="name_{{ $user->id }}" value="Name" />
-                                                                <x-text-input 
-                                                                    id="name_{{ $user->id }}" 
-                                                                    name="name" 
-                                                                    type="text" 
-                                                                    class="mt-1 block w-full" 
-                                                                    value="{{ $user->name }}" 
-                                                                    required 
+                                                                <x-text-input
+                                                                    id="name_{{ $user->id }}"
+                                                                    name="name"
+                                                                    type="text"
+                                                                    class="mt-1 block w-full"
+                                                                    value="{{ $user->name }}"
+                                                                    required
                                                                 />
                                                             </div>
-                                                            
+
                                                             <div>
                                                                 <x-input-label for="email_{{ $user->id }}" value="Email" />
-                                                                <x-text-input 
-                                                                    id="email_{{ $user->id }}" 
-                                                                    name="email" 
-                                                                    type="email" 
-                                                                    class="mt-1 block w-full" 
-                                                                    value="{{ $user->email }}" 
-                                                                    required 
+                                                                <x-text-input
+                                                                    id="email_{{ $user->id }}"
+                                                                    name="email"
+                                                                    type="email"
+                                                                    class="mt-1 block w-full"
+                                                                    value="{{ $user->email }}"
+                                                                    required
                                                                 />
                                                             </div>
-                                                            
+
                                                             <div>
                                                                 <x-input-label for="password_{{ $user->id }}" value="Password" />
-                                                                <x-text-input 
-                                                                    id="password_{{ $user->id }}" 
-                                                                    name="password" 
-                                                                    type="password" 
-                                                                    class="mt-1 block w-full" 
-                                                                    autocomplete="new-password" 
+                                                                <x-text-input
+                                                                    id="password_{{ $user->id }}"
+                                                                    name="password"
+                                                                    type="password"
+                                                                    class="mt-1 block w-full"
+                                                                    autocomplete="new-password"
                                                                     placeholder="Leave blank to not change"
                                                                 />
                                                             </div>
-                                                            
+
                                                             <div>
                                                                 <x-input-label for="role_{{ $user->id }}" value="Role" />
-                                                                <select 
-                                                                    id="role_{{ $user->id }}" 
-                                                                    name="role" 
+                                                                <select
+                                                                    id="role_{{ $user->id }}"
+                                                                    name="role"
                                                                     class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"
                                                                 >
                                                                     <option value="user" {{ $user->role === 'user' ? 'selected' : '' }}>User</option>
@@ -246,7 +246,7 @@
                                                                 </select>
                                                             </div>
                                                         </div>
-                                                        
+
                                                         <div class="flex justify-end mt-4 space-x-2">
                                                             <x-secondary-button @click="showEditForm{{ $user->id }} = false" type="button">
                                                                 Cancel
@@ -262,7 +262,7 @@
 
                                         <!-- Кнопка удаления -->
                                         <div x-data="{ showDeleteConfirmation{{ $user->id }}: false }">
-                                            <x-secondary-button 
+                                            <x-secondary-button
                                                 @click="showDeleteConfirmation{{ $user->id }} = true"
                                                 class="px-3 py-1 text-xs w-20 justify-center bg-red-600 hover:bg-red-700 text-white"
                                             >
@@ -280,9 +280,9 @@
                                                             </svg>
                                                         </button>
                                                     </div>
-                                                    
+
                                                     <p class="text-gray-300 mb-4">Are you sure you want to delete user "{{ $user->name }}"?</p>
-                                                    
+
                                                     <form action="{{ route('users.destroy', $user) }}" method="POST">
                                                         @csrf
                                                         @method('DELETE')
