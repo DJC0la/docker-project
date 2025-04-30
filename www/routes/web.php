@@ -12,10 +12,11 @@ Route::get('/', function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [UserController::class, 'index'])->name('dashboard');
-    Route::get('/organization', [OrganizationController::class, 'index'])->name('organization');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/organization', [OrganizationController::class, 'index'])->name('organization');
 });
 
 Route::middleware(['auth', 'role:'.TypesRole::ADMIN->value])->group(function () {
@@ -23,6 +24,10 @@ Route::middleware(['auth', 'role:'.TypesRole::ADMIN->value])->group(function () 
     Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
     Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+
+    Route::post('/organization', [OrganizationController::class, 'store'])->name('organization.store');
+    Route::put('/organization/{organization}', [OrganizationController::class, 'update'])->name('organization.update');
+    Route::delete('/organization/{organization}', [OrganizationController::class, 'destroy'])->name('organization.destroy');
 });
 
 require __DIR__.'/auth.php';

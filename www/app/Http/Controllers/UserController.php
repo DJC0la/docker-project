@@ -32,16 +32,6 @@ class UserController extends Controller
         ]);
     }
 
-    public function index_organization(Request $request)
-    {
-        $showUserTable = auth()->user()->hasRole(TypesRole::ADMIN);
-
-        return view('organization', [
-            'organizations' => $organizations,
-            'showUserTable' => $showUserTable
-        ]);
-    }
-
     public function store(UserStoreRequest $request)
     {
         $this->userService->createUser($request->validated());
