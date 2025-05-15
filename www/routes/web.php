@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\DirectionController;
+use App\Http\Controllers\ProgramController;
 use Illuminate\Support\Facades\Route;
 use App\Enums\TypesRole;
 
@@ -19,6 +20,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/organization', [OrganizationController::class, 'index'])->name('organization');
     Route::get('/direction', [DirectionController::class, 'index'])->name('direction');
+    Route::get('/program', [ProgramController::class, 'index'])->name('program');
 });
 
 Route::middleware(['auth', 'role:'.TypesRole::ADMIN->value])->group(function () {
@@ -34,6 +36,10 @@ Route::middleware(['auth', 'role:'.TypesRole::ADMIN->value])->group(function () 
     Route::post('/direction', [DirectionController::class, 'store'])->name('direction.store');
     Route::put('/direction/{direction}', [DirectionController::class, 'update'])->name('direction.update');
     Route::delete('/direction/{direction}', [DirectionController::class, 'destroy'])->name('direction.destroy');
+
+    Route::post('/program', [ProgramController::class, 'store'])->name('program.store');
+    Route::put('/program/{program}', [ProgramController::class, 'update'])->name('program.update');
+    Route::delete('/program/{program}', [ProgramController::class, 'destroy'])->name('program.destroy');
 });
 
 require __DIR__.'/auth.php';

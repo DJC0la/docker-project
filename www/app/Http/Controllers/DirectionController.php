@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\DirectionStoreRequest;
 use App\Http\Requests\DirectionUpdateRequest;
 use App\Models\Direction;
+use App\Models\Organization;
 use App\Services\DirectionService;
 use App\Enums\TypesRole;
 
@@ -26,8 +27,11 @@ class DirectionController extends Controller
             )
             : Direction::query()->paginate($request->input('perPage', 10));
 
+        $organizations = Organization::all();
+
         return view('direction', [
             'directions' => $directions,
+            'organizations' => $organizations,
             'showUserTable' => $showUserTable
         ]);
     }
