@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrganizationController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DirectionController;
 use App\Http\Controllers\ProgramController;
 use Illuminate\Support\Facades\Route;
@@ -19,6 +20,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('/organization', [OrganizationController::class, 'index'])->name('organization');
+    Route::get('/contact', [ContactController::class, 'index'])->name('contact');
     Route::get('/direction', [DirectionController::class, 'index'])->name('direction');
     Route::get('/program', [ProgramController::class, 'index'])->name('program');
 });
@@ -32,6 +34,10 @@ Route::middleware(['auth', 'role:'.TypesRole::ADMIN->value])->group(function () 
     Route::post('/organization', [OrganizationController::class, 'store'])->name('organization.store');
     Route::put('/organization/{organization}', [OrganizationController::class, 'update'])->name('organization.update');
     Route::delete('/organization/{organization}', [OrganizationController::class, 'destroy'])->name('organization.destroy');
+
+    Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+    Route::put('/contact/{contact}', [ContactController::class, 'update'])->name('contact.update');
+    Route::delete('/contact/{contact}', [ContactController::class, 'destroy'])->name('contact.destroy');
 
     Route::post('/direction', [DirectionController::class, 'store'])->name('direction.store');
     Route::put('/direction/{direction}', [DirectionController::class, 'update'])->name('direction.update');
