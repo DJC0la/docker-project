@@ -19,7 +19,7 @@ class EnsureUserHasRole
     {
         $roleEnum = TypesRole::tryFrom($role);
 
-        if (! $request->user() || ! $roleEnum || ! $request->user()->hasRole($roleEnum)) {
+        if (! $request->user() || ! $roleEnum || ! $request->user()->is_hasRole($roleEnum)) {
             abort(403, "Requires {$role} role");
         }
 
