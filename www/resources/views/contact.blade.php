@@ -70,8 +70,8 @@
                                                     class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"
                                                     required
                                                 >
-                                                    @foreach($organizations as $org)
-                                                        <option value="{{ $org->id }}">{{ $org->name }}</option>
+                                                    @foreach($organizations as $id => $name)
+                                                        <option value="{{ $id }}">{{ $name }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -220,8 +220,8 @@
                                                                     class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"
                                                                     required
                                                                 >
-                                                                    @foreach($organizations as $org)
-                                                                        <option value="{{ $org->id }}" {{ $contact->organization_id == $org->id ? 'selected' : '' }}>{{ $org->name }}</option>
+                                                                    @foreach($organizations as $id => $name)
+                                                                        <option value="{{ $id }}" {{ $contact->organization_id == $id ? 'selected' : '' }}>{{ $name }}</option>
                                                                     @endforeach
                                                                 </select>
                                                             </div>

@@ -43,4 +43,9 @@ class OrganizationService
     {
         return $organization->delete();
     }
+
+    public function getAllIds(): array
+    {
+        return Organization::pluck('name', 'id')->toArray();
+    }
 }
