@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FiltrationRequest;
 use Illuminate\Http\Request;
 use App\Http\Requests\DirectionStoreRequest;
 use App\Http\Requests\DirectionUpdateRequest;
@@ -16,14 +17,17 @@ class DirectionController extends Controller
         protected DirectionService $directionService
     ) {}
 
-    public function index(Request $request)
+    public function index(FiltrationRequest $request)
     {
-        $showUserTable = auth()->user()->hasRole(TypesRole::ADMIN);
+        $showUserTable = auth()->user()->is_hasRole(TypesRole::ADMIN);
 
         $directions = $showUserTable
             ? $this->directionService->getFilteredDirections(
-                $request->only(['search_code', 'search_name', 'search_degree']),
-                $request->input('perPage', 10)
+                [
+                    $validated['search_name'] ?? null,
+                    $validated['search_email'] ?? null,
+                ],
+                $validated['perPage'] ?? 10
             )
             : Direction::query()->paginate($request->input('perPage', 10));
 

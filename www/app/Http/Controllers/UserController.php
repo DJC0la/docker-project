@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserStoreRequest;
 use App\Http\Requests\UserUpdateRequest;
+use App\Http\Requests\FiltrationRequest;
 use App\Models\User;
 use App\Services\UserService;
 use App\Enums\TypesRole;
@@ -15,14 +16,18 @@ class UserController extends Controller
         protected UserService $userService
     ) {}
 
-    public function index(Request $request)
+    public function index(FiltrationRequest $request)
     {
-        $showUserTable = auth()->user()->hasRole(TypesRole::ADMIN);
+        $showUserTable = auth()->user()->is_hasRole(TypesRole::ADMIN);
 
+        $validated = $request->validated();
         $users = $showUserTable
             ? $this->userService->getFilteredUsers(
-                $request->only(['search_name', 'search_email']),
-                $request->input('perPage', 10)
+                [
+                    $validated['search_name'] ?? null,
+                    $validated['search_email'] ?? null,
+                ],
+                $validated['perPage'] ?? 10
             )
             : collect();
 

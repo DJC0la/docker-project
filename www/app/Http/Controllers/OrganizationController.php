@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FiltrationRequest;
 use Illuminate\Http\Request;
 use App\Http\Requests\OrganizationStoreRequest;
 use App\Http\Requests\OrganizationUpdateRequest;
@@ -15,14 +16,17 @@ class OrganizationController extends Controller
         protected OrganizationService $organizationService
     ) {}
 
-    public function index(Request $request)
+    public function index(FiltrationRequest $request)
     {
-        $showUserTable = auth()->user()->hasRole(TypesRole::ADMIN);
+        $showUserTable = auth()->user()->is_hasRole(TypesRole::ADMIN);
 
         $organizations = $showUserTable
             ? $this->organizationService->getFilteredOrganizations(
-                $request->only(['search_name', 'search_email']),
-                $request->input('perPage', 10)
+                [
+                    $validated['search_name'] ?? null,
+                    $validated['search_email'] ?? null,
+                ],
+                $validated['perPage'] ?? 10
             )
             : Organization::query()->paginate($request->input('perPage', 10));
 

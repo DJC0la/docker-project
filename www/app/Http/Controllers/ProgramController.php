@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FiltrationRequest;
 use App\Http\Requests\ProgramStoreRequest;
 use App\Http\Requests\ProgramUpdateRequest;
 use App\Models\Program;
@@ -16,14 +17,17 @@ class ProgramController extends Controller
         protected ProgramService $programService
     ) {}
 
-    public function index(Request $request)
+    public function index(FiltrationRequest $request)
     {
-        $showUserTable = auth()->user()->hasRole(TypesRole::ADMIN);
+        $showUserTable = auth()->user()->is_hasRole(TypesRole::ADMIN);
 
         $programs = $showUserTable
             ? $this->programService->getFilteredPrograms(
-                $request->only(['search_name', 'search_direction']),
-                $request->input('perPage', 10)
+                [
+                    $validated['search_name'] ?? null,
+                    $validated['search_email'] ?? null,
+                ],
+                $validated['perPage'] ?? 10
             )
             : Program::with('direction')->paginate($request->input('perPage', 10));
 

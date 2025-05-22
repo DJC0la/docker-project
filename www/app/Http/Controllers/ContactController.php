@@ -5,34 +5,39 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\ContactStoreRequest;
 use App\Http\Requests\ContactUpdateRequest;
-use \App\Models\Contact;
+use App\Http\Requests\FiltrationRequest;
+use App\Models\Contact;
 use App\Models\Organization;
 use App\Services\ContactService;
+use App\Services\OrganizationService;
 use App\Enums\TypesRole;
 
 class ContactController extends Controller
 {
     public function __construct(
-        protected ContactService $contactService
+        private ContactService $contactService,
+        private OrganizationService $organizationService
     ) {}
 
-    public function index(Request $request)
+    public function index(FiltrationRequest $request)
     {
-        $showUserTable = auth()->user()->hasRole(TypesRole::ADMIN);
-
+        $showUserTable = auth()->user()->is_hasRole(TypesRole::ADMIN);
+        $validated = $request->validated();
         $contact = $showUserTable
             ? $this->contactService->getFilteredContacts(
-                $request->only(['search_name', 'search_email']),
-                $request->input('perPage', 10)
+                [
+                    $validated['search_name'] ?? null,
+                    $validated['search_email'] ?? null,
+                ],
+                $validated['perPage'] ?? 10
             )
             : Contact::query()->paginate($request->input('perPage', 10));
 
-        $organizations = Organization::all();
 
         return view('contact', [
             'contacts' => $contact,
             'showUserTable' => $showUserTable,
-            'organizations' => $organizations
+            'organizations' => $this->organizationService->getAllIds()
         ]);
     }
 
