@@ -11,13 +11,11 @@ class ProgramService
         $query = Program::query()->with('direction');
 
         if (!empty($filters['search_name'])) {
-            $query->where('name', 'like', '%'.$filters['search_name'].'%');
+            $query->where('name', 'like', '%' . $filters['search_name'] . '%');
         }
 
         if (!empty($filters['search_direction'])) {
-            $query->whereHas('direction', function($q) use ($filters) {
-                $q->where('name', 'like', '%'.$filters['search_direction'].'%');
-            });
+            $query->whereHas('direction', fn($q) => $q->where('name', 'like', '%' . $filters['search_direction'] . '%'));
         }
 
         return $query->paginate(min($perPage, 100))->withQueryString();

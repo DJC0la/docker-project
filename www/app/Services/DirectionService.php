@@ -45,4 +45,9 @@ class DirectionService
     {
         return $direction->delete();
     }
+
+    public function getAllIds(): array
+    {
+        return Direction::pluck('name', 'id')->toArray();
+    }
 }

@@ -9,12 +9,14 @@ use App\Http\Requests\DirectionUpdateRequest;
 use App\Models\Direction;
 use App\Models\Organization;
 use App\Services\DirectionService;
+use App\Services\OrganizationService;
 use App\Enums\TypesRole;
 
 class DirectionController extends Controller
 {
     public function __construct(
-        protected DirectionService $directionService
+        private DirectionService $directionService,
+        private OrganizationService $organizationService
     ) {}
 
     public function index(FiltrationRequest $request)
@@ -31,11 +33,9 @@ class DirectionController extends Controller
             )
             : Direction::query()->paginate($request->input('perPage', 10));
 
-        $organizations = Organization::all();
-
         return view('direction', [
             'directions' => $directions,
-            'organizations' => $organizations,
+            'organizations' => $this->organizationService->getAllIds(),
             'showUserTable' => $showUserTable
         ]);
     }

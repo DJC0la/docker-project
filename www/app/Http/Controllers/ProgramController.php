@@ -8,13 +8,15 @@ use App\Http\Requests\ProgramUpdateRequest;
 use App\Models\Program;
 use App\Models\Direction;
 use App\Services\ProgramService;
+use App\Services\DirectionService;
 use App\Enums\TypesRole;
 use Illuminate\Http\Request;
 
 class ProgramController extends Controller
 {
     public function __construct(
-        protected ProgramService $programService
+        private ProgramService $programService,
+        private DirectionService $directionService
     ) {}
 
     public function index(FiltrationRequest $request)
@@ -31,11 +33,9 @@ class ProgramController extends Controller
             )
             : Program::with('direction')->paginate($request->input('perPage', 10));
 
-        $directions = Direction::all();
-
         return view('program', [
             'programs' => $programs,
-            'directions' => $directions,
+            'directions' => $this->directionService->getAllIds(),
             'showUserTable' => $showUserTable
         ]);
     }
