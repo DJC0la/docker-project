@@ -1,23 +1,20 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\OrganizationController;
-use App\Http\Controllers\ContactController;
-use App\Http\Controllers\DirectionController;
-use App\Http\Controllers\ProgramController;
+use App\Http\Controllers\{ProfileController, UserController, OrganizationController,
+    ContactController, DirectionController, ProgramController};
 use Illuminate\Support\Facades\Route;
 use App\Enums\TypesRole;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', fn () => view('welcome'));
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [UserController::class, 'index'])->name('dashboard');
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::controller(ProfileController::class)->group(function () {
+        Route::get('/profile', 'edit')->name('profile.edit');
+        Route::patch('/profile', 'update')->name('profile.update');
+        Route::delete('/profile', 'destroy')->name('profile.destroy');
+    });
 
     Route::get('/organization', [OrganizationController::class, 'index'])->name('organization');
     Route::get('/contact', [ContactController::class, 'index'])->name('contact');
@@ -26,26 +23,31 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::middleware(['auth', 'role:'.TypesRole::ADMIN->value])->group(function () {
-    Route::post('/users', [UserController::class, 'store'])->name('users.store');
-    Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
-    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
-    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+    Route::resource('users', UserController::class)->except(['index', 'create', 'show']);
 
-    Route::post('/organization', [OrganizationController::class, 'store'])->name('organization.store');
-    Route::put('/organization/{organization}', [OrganizationController::class, 'update'])->name('organization.update');
-    Route::delete('/organization/{organization}', [OrganizationController::class, 'destroy'])->name('organization.destroy');
+    Route::controller(OrganizationController::class)->prefix('organization')->group(function () {
+        Route::post('/', 'store')->name('organization.store');
+        Route::put('/{organization}', 'update')->name('organization.update');
+        Route::delete('/{organization}', 'destroy')->name('organization.destroy');
+    });
 
-    Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
-    Route::put('/contact/{contact}', [ContactController::class, 'update'])->name('contact.update');
-    Route::delete('/contact/{contact}', [ContactController::class, 'destroy'])->name('contact.destroy');
+    Route::controller(ContactController::class)->prefix('contact')->group(function () {
+        Route::post('/', 'store')->name('contact.store');
+        Route::put('/{contact}', 'update')->name('contact.update');
+        Route::delete('/{contact}', 'destroy')->name('contact.destroy');
+    });
 
-    Route::post('/direction', [DirectionController::class, 'store'])->name('direction.store');
-    Route::put('/direction/{direction}', [DirectionController::class, 'update'])->name('direction.update');
-    Route::delete('/direction/{direction}', [DirectionController::class, 'destroy'])->name('direction.destroy');
+    Route::controller(DirectionController::class)->prefix('direction')->group(function () {
+        Route::post('/', 'store')->name('direction.store');
+        Route::put('/{direction}', 'update')->name('direction.update');
+        Route::delete('/{direction}', 'destroy')->name('direction.destroy');
+    });
 
-    Route::post('/program', [ProgramController::class, 'store'])->name('program.store');
-    Route::put('/program/{program}', [ProgramController::class, 'update'])->name('program.update');
-    Route::delete('/program/{program}', [ProgramController::class, 'destroy'])->name('program.destroy');
+    Route::controller(ProgramController::class)->prefix('program')->group(function () {
+        Route::post('/', 'store')->name('program.store');
+        Route::put('/{program}', 'update')->name('program.update');
+        Route::delete('/{program}', 'destroy')->name('program.destroy');
+    });
 });
 
 require __DIR__.'/auth.php';

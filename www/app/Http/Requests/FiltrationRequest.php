@@ -17,6 +17,8 @@ class FiltrationRequest extends FormRequest
             'perPage' => 'integer|min:1|max:100',
             'search_name' => 'nullable|string|max:255',
             'search_email' => 'nullable|string|max:255',
+            'search_direction' => 'nullable|string|max:255',
+            'search_code' => 'nullable|string|max:255',
         ];
     }
 }

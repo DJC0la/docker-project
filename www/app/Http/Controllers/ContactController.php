@@ -23,11 +23,12 @@ class ContactController extends Controller
     {
         $showUserTable = auth()->user()->is_hasRole(TypesRole::ADMIN);
         $validated = $request->validated();
+
         $contact = $showUserTable
             ? $this->contactService->getFilteredContacts(
                 [
-                    $validated['search_name'] ?? null,
-                    $validated['search_email'] ?? null,
+                    'search_name' => $validated['search_name'] ?? null,
+                    'search_email' => $validated['search_email'] ?? null,
                 ],
                 $validated['perPage'] ?? 10
             )

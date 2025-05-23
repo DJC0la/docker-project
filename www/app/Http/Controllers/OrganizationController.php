@@ -19,12 +19,13 @@ class OrganizationController extends Controller
     public function index(FiltrationRequest $request)
     {
         $showUserTable = auth()->user()->is_hasRole(TypesRole::ADMIN);
+        $validated = $request->validated();
 
         $organizations = $showUserTable
             ? $this->organizationService->getFilteredOrganizations(
                 [
-                    $validated['search_name'] ?? null,
-                    $validated['search_email'] ?? null,
+                    'search_name' => $validated['search_name'] ?? null,
+                    'search_email' => $validated['search_email'] ?? null,
                 ],
                 $validated['perPage'] ?? 10
             )

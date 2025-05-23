@@ -22,12 +22,13 @@ class ProgramController extends Controller
     public function index(FiltrationRequest $request)
     {
         $showUserTable = auth()->user()->is_hasRole(TypesRole::ADMIN);
+        $validated = $request->validated();
 
         $programs = $showUserTable
             ? $this->programService->getFilteredPrograms(
                 [
-                    $validated['search_name'] ?? null,
-                    $validated['search_email'] ?? null,
+                    'search_name' => $validated['search_name'] ?? null,
+                    'search_direction' => $validated['search_direction'] ?? null,
                 ],
                 $validated['perPage'] ?? 10
             )

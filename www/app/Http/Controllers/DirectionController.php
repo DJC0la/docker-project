@@ -22,12 +22,13 @@ class DirectionController extends Controller
     public function index(FiltrationRequest $request)
     {
         $showUserTable = auth()->user()->is_hasRole(TypesRole::ADMIN);
+        $validated = $request->validated();
 
         $directions = $showUserTable
             ? $this->directionService->getFilteredDirections(
                 [
-                    $validated['search_name'] ?? null,
-                    $validated['search_email'] ?? null,
+                    'search_code' => $validated['search_code'] ?? null,
+                    'search_name' => $validated['search_name'] ?? null,
                 ],
                 $validated['perPage'] ?? 10
             )
